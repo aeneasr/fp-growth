@@ -1,15 +1,25 @@
 package cmd
 
+import "fmt"
+
 type FPTree struct {
 	Root *FPTreeNode
 }
 
 type FPTreeNode struct {
-	Link    *FPTreeNode
-	Children []*FPTreeNode
-	Parent  *FPTreeNode
 	Item    int
 	Count   int
+	Link    *FPTreeNode
+	Parent  *FPTreeNode
+	Children []*FPTreeNode
+}
+
+func (f *FPTreeNode) String() string {
+	var parent = 0
+	if f.Parent != nil {
+		parent = f.Parent.Item
+	}
+	return fmt.Sprintf("{item=%d count=%d link=%v parent=%d children=%v}", f.Item, f.Count, f.Link, parent ,f.Children)
 }
 
 func NewFPTree(ordered DataSet) FPTree {
@@ -42,7 +52,7 @@ func buildBranch(items Items, n *FPTreeNode) {
 			nn := &FPTreeNode{
 				Item: item,
 				Count: 1,
-				//Parent: n,
+				Parent: n,
 				Children: []*FPTreeNode{},
 			}
 			current.Children = append(current.Children, nn)
