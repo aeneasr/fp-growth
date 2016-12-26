@@ -1,6 +1,8 @@
 package cmd
 
-import "fmt"
+import (
+	"fmt"
+)
 
 type FPTree struct {
 	Root *FPTreeNode
@@ -15,28 +17,41 @@ type FPTreeNode struct {
 }
 
 func (f *FPTreeNode) String() string {
-	var parent = 0
+	var parent = "none"
 	if f.Parent != nil {
-		parent = f.Parent.Item
+		parent = fmt.Sprintf("%d:%d", f.Parent.Item, f.Parent.Count)
 	}
-	return fmt.Sprintf("{item=%d count=%d link=%v parent=%d children=%v}", f.Item, f.Count, f.Link, parent ,f.Children)
+	return fmt.Sprintf("{item=%d count=%d link=%v parent=%s children=%v}", f.Item, f.Count, f.Link, parent ,f.Children)
 }
 
-func NewFPTree(ordered DataSet) FPTree {
+func NewFPTree(ordered DataSet, ht *HeadTable) FPTree {
 	t := FPTree{
 		Root: &FPTreeNode{
 			Children: []*FPTreeNode{},
 		},
 	}
 
+	links := map[int][]*FPTreeNode{}
 	for _, tx := range ordered {
-		buildBranch(tx, t.Root)
+		buildTree(tx, t.Root, nil, links)
 	}
+
+	for item, l := range links {
+		ht.SetLink(item, l[0])
+		if len(l) == 1 {
+			continue
+		}
+
+		for k, n := range l[0:len(l) - 1] {
+			n.Link = l[k+1]
+		}
+	}
+
 	return t
 }
 
-func buildBranch(items Items, n *FPTreeNode) {
-	current := n
+func buildTree(items Items, root *FPTreeNode, parent *FPTreeNode, links map[int][]*FPTreeNode) {
+	current := root
 	var c *FPTreeNode
 	for _, item := range items {
 		var found bool
@@ -52,11 +67,15 @@ func buildBranch(items Items, n *FPTreeNode) {
 			nn := &FPTreeNode{
 				Item: item,
 				Count: 1,
-				Parent: n,
+				Parent: parent,
 				Children: []*FPTreeNode{},
+				Link: nil,
 			}
 			current.Children = append(current.Children, nn)
 			current = nn
+
+			links[item] = append(links[item], nn)
 		}
+		parent = current
 	}
 }

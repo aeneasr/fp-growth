@@ -7,7 +7,6 @@ import (
 )
 
 func TestNewFPTree(t *testing.T) {
-
 	for k, c := range []struct {
 		db     DataSet
 		minSup float32
@@ -36,7 +35,7 @@ func TestNewFPTree(t *testing.T) {
 			e: FPTree{
 				Root: &FPTreeNode{
 					Children: []*FPTreeNode{
-						&FPTreeNode{Item: A, Count: 1, Children: []*FPTreeNode{&FPTreeNode{Item: B, Count: 1, Children: []*FPTreeNode{}}}},
+						&FPTreeNode{Item: A, Count: 1, Children: []*FPTreeNode{&FPTreeNode{Item: B, Parent: &FPTreeNode{Item: A, Count: 1}, Count: 1, Children: []*FPTreeNode{}}}},
 					},
 				},
 			},
@@ -50,11 +49,7 @@ func TestNewFPTree(t *testing.T) {
 			e: FPTree{
 				Root: &FPTreeNode{
 					Children: []*FPTreeNode{
-						&FPTreeNode{Item: B, Count: 2, Children: []*FPTreeNode{&FPTreeNode{Item: A, Count: 1, Children: []*FPTreeNode{}}}},
-						// &FPTreeNode{Item: B, Count: 2, Children: []*FPTreeNode{}},
-						//
-						// &FPTreeNode{Item: A, Count: 1, Children: []*FPTreeNode{&FPTreeNode{Item: B, Count: 1, Children: []*FPTreeNode{}}}},
-						// &FPTreeNode{Item: B, Count: 1, Children: []*FPTreeNode{}},
+						&FPTreeNode{Item: B, Count: 2, Children: []*FPTreeNode{&FPTreeNode{Item: A, Parent: &FPTreeNode{Item: B, Count: 2}, Count: 1, Children: []*FPTreeNode{}}}},
 					},
 				},
 			},
@@ -69,7 +64,7 @@ func TestNewFPTree(t *testing.T) {
 			e: FPTree{
 				Root: &FPTreeNode{
 					Children: []*FPTreeNode{
-						&FPTreeNode{Item: A, Count: 2, Children: []*FPTreeNode{&FPTreeNode{Item: B, Count: 1, Children: []*FPTreeNode{}}}},
+						&FPTreeNode{Item: A, Count: 2, Children: []*FPTreeNode{&FPTreeNode{Item: B, Parent: &FPTreeNode{Item: A, Count: 2}, Count: 1, Children: []*FPTreeNode{}, Link: &FPTreeNode{Item: B, Count: 1}}}},
 						&FPTreeNode{Item: B, Count: 1, Children: []*FPTreeNode{}},
 					},
 				},
@@ -85,8 +80,8 @@ func TestNewFPTree(t *testing.T) {
 				Root: &FPTreeNode{
 					Children: []*FPTreeNode{
 						&FPTreeNode{Item: A, Count: 2, Children: []*FPTreeNode{
-							&FPTreeNode{Item: B, Count: 2, Children: []*FPTreeNode{
-								&FPTreeNode{Item: C, Count: 2, Children: []*FPTreeNode{}},
+							&FPTreeNode{Item: B, Parent: &FPTreeNode{Item: A, Count: 2}, Count: 2, Children: []*FPTreeNode{
+								&FPTreeNode{Item: C, Parent: &FPTreeNode{Item: B, Count: 2}, Count: 2, Children: []*FPTreeNode{}},
 							}},
 						}},
 					},
@@ -100,29 +95,29 @@ func TestNewFPTree(t *testing.T) {
 				Root: &FPTreeNode{
 					Children: []*FPTreeNode{
 						&FPTreeNode{Item: A, Count: 7, Children: []*FPTreeNode{
-							&FPTreeNode{Item: C, Count: 4, Children: []*FPTreeNode{
-								&FPTreeNode{Item: B, Count: 3, Children: []*FPTreeNode{
-									&FPTreeNode{Item: D, Count: 1, Children: []*FPTreeNode{
-										&FPTreeNode{Item: E, Count: 1, Children: []*FPTreeNode{}},
+							&FPTreeNode{Item: C, Count: 4, Parent: &FPTreeNode{Item: A, Count: 7}, Link: &FPTreeNode{Item: C, Count: 2}, Children: []*FPTreeNode{
+								&FPTreeNode{Item: B, Count: 3, Parent: &FPTreeNode{Item: C, Count: 4}, Link: &FPTreeNode{Item: B, Count: 2}, Children: []*FPTreeNode{
+									&FPTreeNode{Item: D, Count: 1, Parent: &FPTreeNode{Item: B, Count: 3}, Link: &FPTreeNode{Item: D, Count: 3}, Children: []*FPTreeNode{
+										&FPTreeNode{Item: E, Count: 1, Parent: &FPTreeNode{Item: D, Count: 1}, Link: &FPTreeNode{Item: E, Count: 1}, Children: []*FPTreeNode{}},
 									}},
 								}},
-								&FPTreeNode{Item: E, Count: 1, Children: []*FPTreeNode{
-									&FPTreeNode{Item: F, Count: 1, Children: []*FPTreeNode{}},
+								&FPTreeNode{Item: E, Count: 1, Parent: &FPTreeNode{Item: C, Count: 4}, Link: &FPTreeNode{Item: E, Count: 1}, Children: []*FPTreeNode{
+									&FPTreeNode{Item: F, Count: 1, Parent: &FPTreeNode{Item: E, Count: 1}, Link: &FPTreeNode{Item: F, Count: 1}, Children: []*FPTreeNode{}},
 								}},
 							}},
-							&FPTreeNode{Item: D, Count: 3, Children: []*FPTreeNode{
-								&FPTreeNode{Item: E, Count: 1, Children: []*FPTreeNode{}},
-								&FPTreeNode{Item: F, Count: 1, Children: []*FPTreeNode{}},
+							&FPTreeNode{Item: D, Count: 3, Parent: &FPTreeNode{Item: A, Count: 7}, Link: &FPTreeNode{Item: D, Count: 1}, Children: []*FPTreeNode{
+								&FPTreeNode{Item: E, Count: 1, Parent: &FPTreeNode{Item: D, Count: 3}, Link: &FPTreeNode{Item: E, Count: 1}, Children: []*FPTreeNode{}},
+								&FPTreeNode{Item: F, Count: 1, Parent: &FPTreeNode{Item: D, Count: 3}, Link: &FPTreeNode{Item: F, Count: 1}, Children: []*FPTreeNode{}},
 							}},
 						}},
 						&FPTreeNode{Item: B, Count: 2, Children: []*FPTreeNode{
-							&FPTreeNode{Item: D, Count: 1, Children: []*FPTreeNode{
-								&FPTreeNode{Item: E, Count: 1, Children: []*FPTreeNode{}},
+							&FPTreeNode{Item: D, Count: 1, Parent: &FPTreeNode{Item: B, Count: 2}, Children: []*FPTreeNode{
+								&FPTreeNode{Item: E, Count: 1, Parent: &FPTreeNode{Item: D, Count: 1}, Link: &FPTreeNode{Item: E, Count: 1}, Children: []*FPTreeNode{}},
 							}},
-							&FPTreeNode{Item: E, Count: 1, Children: []*FPTreeNode{}},
+							&FPTreeNode{Item: E, Count: 1, Parent: &FPTreeNode{Item: B, Count: 2}, Children: []*FPTreeNode{}},
 						}},
 						&FPTreeNode{Item: C, Count: 2, Children: []*FPTreeNode{
-							&FPTreeNode{Item: F, Count: 1, Children: []*FPTreeNode{}},
+							&FPTreeNode{Item: F, Count: 1, Parent: &FPTreeNode{Item: C, Count: 2}, Children: []*FPTreeNode{}},
 						}},
 					},
 				},
@@ -131,12 +126,14 @@ func TestNewFPTree(t *testing.T) {
 	} {
 		t.Run(fmt.Sprintf("case=%d", k), func(t *testing.T) {
 			h := NewHeadTable(c.db, c.minSup)
-			t.Logf("Head table: %v", h)
 			ordered := OrderItems(c.db, h)
 
-			a := NewFPTree(ordered)
+			a := NewFPTree(ordered, &h)
 			assert.True(t, treeEquals(t, c.e.Root, a.Root))
-			// clean up parent things, somehow compare without order?
+
+			for _, r := range h {
+				assert.NotNil(t, r.Link)
+			}
 		})
 	}
 }
@@ -177,8 +174,39 @@ func TestTreeEquals(t *testing.T) {
 
 func treeEquals(t *testing.T, expect, actual *FPTreeNode) bool {
 	if expect.Item != actual.Item || expect.Count != actual.Count || len(expect.Children) != len(actual.Children) {
-		t.Logf("reason=notequal expected=%v+ actual=%v+", expect, actual)
+		// t.Logf("reason=notequal expected=%v+ actual=%v+", expect, actual)
 		return false
+	}
+
+	if expect.Link == nil {
+		if actual.Link != nil {
+			return false
+		}
+	} else {
+		if actual.Link == nil {
+			return false
+		}
+
+		if actual.Link.Item != expect.Link.Item || actual.Link.Count != expect.Link.Count {
+			return false
+		}
+	}
+
+	if expect.Parent == nil {
+		if actual.Parent != nil {
+			t.Logf("reason=unexparent\nexpected=%v\nactual=%v", expect, actual)
+			return false
+		}
+	} else {
+		if actual.Parent == nil {
+			t.Logf("reason=parentmissing\nexpected=%v\nactual=%v", expect, actual)
+			return false
+		}
+
+		if actual.Parent.Item != expect.Parent.Item || actual.Parent.Count != expect.Parent.Count {
+			t.Logf("reason=wrongparent\nexpected=%v\nactual=%v", expect, actual)
+			return false
+		}
 	}
 
 	for _, v1 := range expect.Children {
@@ -186,57 +214,17 @@ func treeEquals(t *testing.T, expect, actual *FPTreeNode) bool {
 		for _, v2 := range actual.Children {
 			if v2.Item == v1.Item {
 				if !treeEquals(t, v1, v2) {
-					t.Logf("reason=branchfail expected=%v actual=%v", expect, actual)
+					// t.Logf("reason=branchfail expected=%v actual=%v", expect, actual)
 					return false
 				}
 				found = true
 			}
 		}
 		if !found {
-			t.Logf("reason=nonexistent search=%v+ expected=%v actual=%v", v1, expect.Children, actual.Children)
+			// t.Logf("reason=nonexistent search=%v+ expected=%v actual=%v", v1, expect.Children, actual.Children)
 			return false
 		}
 	}
 
 	return true
 }
-
-//
-//func TestNewFPTree(t *testing.T) {
-//	head := NewHeadTable(exDB, 2)
-//	ordered := OrderItems(exDB, head)
-//	e := FPTree{
-//		Root: &FPTreeNode{
-//			Children: []*FPTreeNode{
-//				&FPTreeNode{Item: C, Count: 2, Children: []*FPTreeNode{
-//					&FPTreeNode{Item: F, Count: 1},
-//				}},
-//				&FPTreeNode{Item: A, Count: 7, Children: []*FPTreeNode{
-//					&FPTreeNode{Item: C, Count: 4, Children: []*FPTreeNode{
-//						&FPTreeNode{Item: E, Count: 1, Children: []*FPTreeNode{
-//							&FPTreeNode{Item: F, Count: 1},
-//						}},
-//						&FPTreeNode{Item: B, Count: 3, Children: []*FPTreeNode{
-//							&FPTreeNode{Item: D, Count: 1, Children: []*FPTreeNode{
-//								&FPTreeNode{Item: E, Count: 1},
-//							}},
-//						}},
-//					}},
-//					&FPTreeNode{Item: D, Count: 3, Children: []*FPTreeNode{
-//						&FPTreeNode{Item: E, Count: 1},
-//						&FPTreeNode{Item: F, Count: 1},
-//					}},
-//				}},
-//				&FPTreeNode{Item: B, Count: 2, Children: []*FPTreeNode{
-//					&FPTreeNode{Item: F, Count: 1},
-//					&FPTreeNode{Item: E, Count: 1, Children: []*FPTreeNode{
-//						&FPTreeNode{Item: E, Count: 1},
-//					}},
-//				}},
-//			},
-//		},
-//	}
-//
-//	a := NewFPTree(ordered)
-//	assert.EqualValues(t, e, a)
-//}
