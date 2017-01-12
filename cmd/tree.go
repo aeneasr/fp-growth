@@ -9,10 +9,10 @@ type FPTree struct {
 }
 
 type FPTreeNode struct {
-	Item    int
-	Count   int
-	Link    *FPTreeNode
-	Parent  *FPTreeNode
+	Item     int
+	Count    int
+	Link     *FPTreeNode
+	Parent   *FPTreeNode
 	Children []*FPTreeNode
 }
 
@@ -25,7 +25,34 @@ func (f *FPTreeNode) String() string {
 	if f.Link != nil {
 		link = fmt.Sprintf("%d:%d", f.Link.Item, f.Link.Count)
 	}
-	return fmt.Sprintf("{item=%d count=%d parent=%s link=%s children=%v}", f.Item, f.Count, parent, link,f.Children)
+	return fmt.Sprintf("{item=%d count=%d parent=%s link=%s children=%v}", f.Item, f.Count, parent, link, f.Children)
+}
+
+func (f *FPTreeNode) OnlyOneBranch() bool {
+	if len(f.Children) > 1 {
+		return false
+	}
+
+	for _, c := range f.Children {
+		if !c.OnlyOneBranch() {
+			return false
+		}
+	}
+	return true
+}
+
+type Pattern struct {
+	Item int
+	Count int
+	Child *Pattern
+}
+
+func (f *FPTreeNode) MinePatterns() string {
+	if !f.OnlyOneBranch() {
+		return ""
+	}
+
+	return ""
 }
 
 func NewFPTree(ordered DataSet, ht *HeadTable) FPTree {
@@ -47,7 +74,7 @@ func NewFPTree(ordered DataSet, ht *HeadTable) FPTree {
 		}
 
 		for k, n := range l[0:len(l) - 1] {
-			n.Link = l[k+1]
+			n.Link = l[k + 1]
 		}
 	}
 

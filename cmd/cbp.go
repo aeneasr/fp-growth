@@ -142,7 +142,6 @@ func (p OrderableItems) Len() int {
 func (p OrderableItems) Swap(i, j int) {
 	p[i], p[j] = p[j], p[i]
 }
-
 type OrderableItemsWrapper struct {
 	OrderableItems
 	HT ConditionalHeadTable
@@ -169,6 +168,7 @@ func (ht ConditionalHeadTables) GetIndex(item int) int {
 
 	return -1
 }
+
 func (ht ConditionalHeadTables) Get(item int) *ConditionalHeadTable {
 	return &ht[ht.GetIndex(item)]
 }

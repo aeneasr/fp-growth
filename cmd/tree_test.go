@@ -138,6 +138,54 @@ func TestNewFPTree(t *testing.T) {
 	}
 }
 
+func TestOnlyOneBranch(t *testing.T) {
+	for k, c := range []struct {
+		Root *FPTreeNode
+		e    bool
+	}{
+		{
+			Root: &FPTreeNode{Item: A, Count: 2, Children: []*FPTreeNode{}},
+			e: true,
+		},
+		{
+			Root: &FPTreeNode{Item: A, Count: 2, Children: []*FPTreeNode{&FPTreeNode{Item: A, Count: 2, Children: []*FPTreeNode{&FPTreeNode{Item: A, Count: 2, Children: []*FPTreeNode{}}}}}},
+			e: true,
+		},
+		{
+			Root: &FPTreeNode{
+				Item: A, Count: 2, Children: []*FPTreeNode{
+					&FPTreeNode{
+						Item: A, Count: 2, Children: []*FPTreeNode{
+							&FPTreeNode{Item: A, Count: 2, Children: []*FPTreeNode{}},
+							&FPTreeNode{Item: A, Count: 2, Children: []*FPTreeNode{}},
+						},
+					},
+				},
+			},
+			e: false,
+		},
+		{
+			Root: &FPTreeNode{
+				Item: A, Count: 2, Children: []*FPTreeNode{
+					&FPTreeNode{
+						Item: A, Count: 2, Children: []*FPTreeNode{
+							&FPTreeNode{Item: A, Count: 2, Children: []*FPTreeNode{
+								&FPTreeNode{Item: A, Count: 2, Children: []*FPTreeNode{}},
+								&FPTreeNode{Item: A, Count: 2, Children: []*FPTreeNode{}},
+							}},
+						},
+					},
+				},
+			},
+			e: false,
+		},
+	} {
+		t.Run(fmt.Sprintf("case=%d", k), func(t *testing.T) {
+			assert.Equal(t, c.e, c.Root.OnlyOneBranch())
+		})
+	}
+}
+
 func TestTreeEquals(t *testing.T) {
 	assert.True(t, treeEquals(t, &FPTreeNode{
 		Children: []*FPTreeNode{
