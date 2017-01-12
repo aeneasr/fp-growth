@@ -220,6 +220,92 @@ func TestTreeEquals(t *testing.T) {
 
 }
 
+func TestMinePatterns(t *testing.T) {
+	for k, c := range []struct {
+		p ConditionalItem
+		i *FPTreeNode
+		e []Pattern
+	}{
+		{
+			p: ConditionalItem{Item: B, Count: 3},
+			i: &FPTreeNode{
+				Item: A,
+				Count: 2,
+				Children: []*FPTreeNode{},
+			},
+			e: []Pattern{
+				{
+					Count: 3,
+					Pattern: Items{B},
+				},
+				{
+					Count: 2,
+					Pattern: Items{A, B},
+				},
+			},
+		},
+		{
+			p: ConditionalItem{Item: D, Count: 3},
+			i: &FPTreeNode{
+				Item: F,
+				Count: 3,
+				Children: []*FPTreeNode{
+					&FPTreeNode{
+						Item: C,
+						Count: 3,
+						Children: []*FPTreeNode{
+							&FPTreeNode{
+								Item: A,
+								Count: 3,
+								Children: []*FPTreeNode{},
+							},
+						},
+					},
+				},
+			},
+			e: []Pattern{
+				{
+					Count: 3,
+					Pattern: Items{D},
+				},
+				{
+					Count: 3,
+					Pattern: Items{F,D},
+				},
+				{
+					Count: 3,
+					Pattern: Items{C,D},
+				},
+				{
+					Count: 3,
+					Pattern: Items{A,D},
+				},
+				{
+					Count: 3,
+					Pattern: Items{F,C,D},
+				},
+				{
+					Count: 3,
+					Pattern: Items{F,A,D},
+				},
+				{
+					Count: 3,
+					Pattern: Items{C,A,D},
+				},
+				{
+					Count: 3,
+					Pattern: Items{F,C,A,D},
+				},
+			},
+		},
+	} {
+		t.Run(fmt.Sprintf("case=%d", k), func(t *testing.T) {
+			out := c.i.MinePatterns(c.p)
+			assert.EqualValues(t, c.e, out)
+		})
+	}
+}
+
 func treeEquals(t *testing.T, expect, actual *FPTreeNode) bool {
 	if expect.Item != actual.Item || expect.Count != actual.Count || len(expect.Children) != len(actual.Children) {
 		t.Logf("reason=notequal\nexpected=%v+\nactual  =%v+", expect, actual)

@@ -42,17 +42,69 @@ func (f *FPTreeNode) OnlyOneBranch() bool {
 }
 
 type Pattern struct {
-	Item int
-	Count int
-	Child *Pattern
+	Pattern Items
+	Count   int
 }
 
-func (f *FPTreeNode) MinePatterns() string {
+func (f *FPTreeNode) MinePatterns(p ConditionalItem) []Pattern {
 	if !f.OnlyOneBranch() {
-		return ""
+		return nil
 	}
 
-	return ""
+	var list []ConditionalItem
+	pa := f
+	for {
+		list = append(list, ConditionalItem{
+			Item: pa.Item,
+			Count: pa.Count,
+		})
+		if len(pa.Children) == 0 {
+			break;
+		}
+		pa = pa.Children[0]
+	}
+
+	comb := func(n, m int, emit func([]int)) {
+		s := make([]int, m)
+		last := m - 1
+		var rc func(int, int)
+		rc = func(i, next int) {
+			for j := next; j < n; j++ {
+				s[i] = j
+				if i == last {
+					emit(s)
+				} else {
+					rc(i + 1, j + 1)
+				}
+			}
+			return
+		}
+		rc(0, 0)
+	}
+
+	res := []Pattern{
+		{
+			Pattern: Items{p.Item},
+			Count: p.Count,
+		},
+	}
+	for i := 1; i <= len(list); i++ {
+		comb(len(list), i, func(c []int) {
+			pattern := Pattern{
+				Count: -1,
+			}
+			for _, v := range c {
+				pattern.Pattern = append(pattern.Pattern, list[v].Item)
+				if list[v].Count < pattern.Count || pattern.Count == -1 {
+					pattern.Count = list[v].Count
+				}
+			}
+			pattern.Pattern = append(pattern.Pattern, p.Item)
+			res = append(res, pattern)
+		})
+	}
+
+	return res
 }
 
 func NewFPTree(ordered DataSet, ht *HeadTable) FPTree {
