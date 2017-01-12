@@ -174,20 +174,23 @@ func TestTreeEquals(t *testing.T) {
 
 func treeEquals(t *testing.T, expect, actual *FPTreeNode) bool {
 	if expect.Item != actual.Item || expect.Count != actual.Count || len(expect.Children) != len(actual.Children) {
-		// t.Logf("reason=notequal expected=%v+ actual=%v+", expect, actual)
+		t.Logf("reason=notequal\nexpected=%v+\nactual=%v+", expect, actual)
 		return false
 	}
 
 	if expect.Link == nil {
 		if actual.Link != nil {
+			t.Logf("reason=unexpectedlink\nexpected=%v+\nactual=%v+", expect, actual)
 			return false
 		}
 	} else {
 		if actual.Link == nil {
+			t.Logf("reason=expectedlink\nexpected=%v+\nactual=%v+", expect, actual)
 			return false
 		}
 
 		if actual.Link.Item != expect.Link.Item || actual.Link.Count != expect.Link.Count {
+			t.Logf("reason=wronglink\nexpected=%v+\nactual=%v+", expect, actual)
 			return false
 		}
 	}
@@ -214,14 +217,14 @@ func treeEquals(t *testing.T, expect, actual *FPTreeNode) bool {
 		for _, v2 := range actual.Children {
 			if v2.Item == v1.Item {
 				if !treeEquals(t, v1, v2) {
-					// t.Logf("reason=branchfail expected=%v actual=%v", expect, actual)
+					t.Logf("reason=branchfail\nexpected=%v\nactual=%v", expect, actual)
 					return false
 				}
 				found = true
 			}
 		}
 		if !found {
-			// t.Logf("reason=nonexistent search=%v+ expected=%v actual=%v", v1, expect.Children, actual.Children)
+			t.Logf("reason=nonexistent\nsearch=%v+\nexpected=%v\nactual=%v", v1, expect.Children, actual.Children)
 			return false
 		}
 	}

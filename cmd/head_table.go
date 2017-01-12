@@ -71,3 +71,12 @@ func (p HeadTable) Get(id int) *HeadTableRow {
 
 	return nil
 }
+func (p HeadTable) GetPosition(id int) int {
+	for k, i := range p {
+		if i.Item == id {
+			return k
+		}
+	}
+
+	return -1
+}
