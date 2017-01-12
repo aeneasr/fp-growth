@@ -18,10 +18,14 @@ type FPTreeNode struct {
 
 func (f *FPTreeNode) String() string {
 	var parent = "none"
+	var link = "none"
 	if f.Parent != nil {
 		parent = fmt.Sprintf("%d:%d", f.Parent.Item, f.Parent.Count)
 	}
-	return fmt.Sprintf("{item=%d count=%d link=%v parent=%s children=%v}", f.Item, f.Count, f.Link, parent ,f.Children)
+	if f.Link != nil {
+		link = fmt.Sprintf("%d:%d", f.Link.Item, f.Link.Count)
+	}
+	return fmt.Sprintf("{item=%d count=%d parent=%s link=%s children=%v}", f.Item, f.Count, parent, link,f.Children)
 }
 
 func NewFPTree(ordered DataSet, ht *HeadTable) FPTree {

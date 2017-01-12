@@ -83,14 +83,8 @@ func ConstructConditionalFPTrees(bs ConditionalPatternBases, ht ConditionalHeadT
 			},
 		}
 
-		var items Items
 		for _, b := range tx.Bases {
-			items = make(Items, len(b))
-			for k, v := range b {
-				items[k] = v.Item
-			}
-
-			buildTree(items, t.Tree.Root, nil, links)
+			buildConditionalTree(b, t.Tree.Root, nil, links)
 		}
 
 		for item, l := range links {
@@ -108,6 +102,36 @@ func ConstructConditionalFPTrees(bs ConditionalPatternBases, ht ConditionalHeadT
 	}
 
 	return res
+}
+
+func buildConditionalTree(items []ConditionalItem, root *FPTreeNode, parent *FPTreeNode, links map[int][]*FPTreeNode) {
+	current := root
+	var c *FPTreeNode
+	for _, item := range items {
+		var found bool
+		for _, c = range current.Children {
+			if c.Item == item.Item {
+				c.Count++
+				current = c
+				found = true
+				break;
+			}
+		}
+		if !found {
+			nn := &FPTreeNode{
+				Item: item.Item,
+				Count: item.Count,
+				Parent: parent,
+				Children: []*FPTreeNode{},
+				Link: nil,
+			}
+			current.Children = append(current.Children, nn)
+			current = nn
+
+			links[item.Item] = append(links[item.Item], nn)
+		}
+		parent = current
+	}
 }
 
 type OrderableItems []ConditionalItem

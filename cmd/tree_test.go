@@ -174,7 +174,7 @@ func TestTreeEquals(t *testing.T) {
 
 func treeEquals(t *testing.T, expect, actual *FPTreeNode) bool {
 	if expect.Item != actual.Item || expect.Count != actual.Count || len(expect.Children) != len(actual.Children) {
-		t.Logf("reason=notequal\nexpected=%v+\nactual=%v+", expect, actual)
+		t.Logf("reason=notequal\nexpected=%v+\nactual  =%v+", expect, actual)
 		return false
 	}
 

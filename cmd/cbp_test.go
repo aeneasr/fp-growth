@@ -604,14 +604,14 @@ func TestConstructConditionalFPTrees(t *testing.T) {
 						Root: &FPTreeNode{
 							Children: []*FPTreeNode{
 								&FPTreeNode{
-									Item: B, Count: 2, Children: []*FPTreeNode{
-										&FPTreeNode{Item: A,  Parent: &FPTreeNode{Item: B, Count: 2}, Count: 2, Children: []*FPTreeNode{}},
+									Item: A, Count: 2, Children: []*FPTreeNode{
+										&FPTreeNode{Item: B, Parent: &FPTreeNode{Item: A, Count: 2}, Count: 2, Children: []*FPTreeNode{}},
 									},
 								},
 							},
 						},
 					},
-				},/*
+				},
 				{
 					Prefix: ConditionalItem{Item: B, Count: 2},
 					Tree: FPTree{
@@ -625,7 +625,100 @@ func TestConstructConditionalFPTrees(t *testing.T) {
 				{
 					Prefix: ConditionalItem{Item: A, Count: 2},
 					Tree: FPTree{Root: &FPTreeNode{}                                },
-				},*/
+				},
+			},
+		},
+		{
+			minSup: 2,
+			bs: g_cbp[4],
+			e: []ConditionalFPTree{
+				{
+					Prefix: ConditionalItem{Item: F, Count: 3},
+					Tree: FPTree{
+						Root: &FPTreeNode{
+							Children: []*FPTreeNode{
+								&FPTreeNode{
+									Item: A, Count: 2, Children: []*FPTreeNode{
+										&FPTreeNode{Item: C, Count: 1, Link: &FPTreeNode{Item: C, Count: 1}, Parent: &FPTreeNode{Item: A, Count: 2}, Children: []*FPTreeNode{}},
+									},
+								},
+								&FPTreeNode{
+									Item: C, Count: 1, Children: []*FPTreeNode{},
+								},
+							},
+						},
+					},
+				},
+				{
+					Prefix: ConditionalItem{Item: E, Count: 5},
+					Tree: FPTree{
+						Root: &FPTreeNode{
+							Children: []*FPTreeNode{
+								&FPTreeNode{
+									Item: A, Count: 3, Children: []*FPTreeNode{
+										&FPTreeNode{Item: B, Count: 1, Link: &FPTreeNode{Item: B, Count: 2}, Parent: &FPTreeNode{Item: A, Count: 3}, Children: []*FPTreeNode{
+											&FPTreeNode{Item: D, Count: 1, Link: &FPTreeNode{Item: D, Count: 1}, Parent: &FPTreeNode{Item: B, Count: 1}, Children: []*FPTreeNode{
+												&FPTreeNode{Item: C, Count: 1, Link: &FPTreeNode{Item: C, Count: 1}, Parent: &FPTreeNode{Item: D, Count: 1}, Children: []*FPTreeNode{}},
+											}},
+										}},
+										&FPTreeNode{Item: D, Count: 1, Link: &FPTreeNode{Item: D, Count: 1}, Parent: &FPTreeNode{Item: A, Count: 3}, Children: []*FPTreeNode{}},
+										&FPTreeNode{Item: C, Count: 1, Parent: &FPTreeNode{Item: A, Count: 3}, Children: []*FPTreeNode{}},
+									},
+								},
+								&FPTreeNode{
+									Item: B, Count: 2, Children: []*FPTreeNode{
+										&FPTreeNode{Item: D, Count: 1, Parent: &FPTreeNode{Item: B, Count: 2}, Children: []*FPTreeNode{}},
+									},
+								},
+							},
+						},
+					},
+				},
+				{
+					Prefix: ConditionalItem{Item: D, Count: 5},
+					Tree: FPTree{
+						Root: &FPTreeNode{
+							Children: []*FPTreeNode{
+								&FPTreeNode{
+									Item: A, Count: 2, Children: []*FPTreeNode{
+										&FPTreeNode{Item: B, Count: 1, Link: &FPTreeNode{Item: B, Count: 1}, Parent: &FPTreeNode{Item: A, Count: 2}, Children: []*FPTreeNode{}},
+									},
+								},
+								&FPTreeNode{Item: B, Count: 1, Children: []*FPTreeNode{}, },
+							},
+						},
+					},
+				},
+				{
+					Prefix: ConditionalItem{Item: B, Count: 5},
+					Tree: FPTree{
+						Root: &FPTreeNode{
+							Children: []*FPTreeNode{
+								&FPTreeNode{
+									Item: A, Count: 3, Children: []*FPTreeNode{
+										&FPTreeNode{Item: C, Count: 3, Parent: &FPTreeNode{Item: A, Count: 3}, Children: []*FPTreeNode{} },
+									},
+								},
+							},
+						},
+					},
+				},
+				{
+					Prefix: ConditionalItem{Item: C, Count: 6},
+					Tree: FPTree{
+						Root: &FPTreeNode{
+							Children: []*FPTreeNode{
+								&FPTreeNode{Item: A, Count: 4, Children: []*FPTreeNode{}},
+							},
+						},
+					},
+				},
+				{
+					Prefix: ConditionalItem{Item: A, Count: 7},
+					Tree: FPTree{
+						Root: &FPTreeNode{},
+					},
+				},
 			},
 		},
 	} {
