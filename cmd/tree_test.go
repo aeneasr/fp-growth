@@ -9,7 +9,7 @@ import (
 func TestNewFPTree(t *testing.T) {
 	for k, c := range []struct {
 		db     DataSet
-		minSup float32
+		minSup int
 		e      FPTree
 	}{
 		{
@@ -126,7 +126,8 @@ func TestNewFPTree(t *testing.T) {
 	} {
 		t.Run(fmt.Sprintf("case=%d", k), func(t *testing.T) {
 			h := NewHeadTable(c.db, c.minSup)
-			ordered := OrderItems(c.db, h)
+			ordered := c.db
+			OrderItems(ordered, h)
 
 			a := NewFPTree(ordered, &h)
 			assert.True(t, treeEquals(t, c.e.Root, a.Root))

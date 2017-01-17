@@ -12,7 +12,7 @@ type HeadTableRow struct {
 	Link  *FPTreeNode
 }
 
-func NewHeadTable(db DataSet, minSup float32) HeadTable {
+func NewHeadTable(db DataSet, minSup int) HeadTable {
 	ic := map[int]int{}
 	for _, tx := range db {
 		for _, i := range tx {

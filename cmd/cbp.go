@@ -68,12 +68,16 @@ func MineConditionalPatternBases(t FPTree, ht HeadTable) ConditionalPatternBases
 
 type ConditionalFPTree struct {
 	Prefix ConditionalItem
-	Tree FPTree
+	Tree   FPTree
+}
+
+func (c *ConditionalFPTree) MineFrequentPatterns() []Pattern {
+	return c.Tree.Root.MinePatterns(c.Prefix)
 }
 
 func ConstructConditionalFPTrees(bs ConditionalPatternBases, ht ConditionalHeadTables) (res []ConditionalFPTree) {
 	for _, tx := range bs {
-		t := ConditionalFPTree {
+		t := ConditionalFPTree{
 			Prefix: tx.Prefix,
 			Tree: FPTree{
 				Root: &FPTreeNode{
@@ -94,7 +98,7 @@ func ConstructConditionalFPTrees(bs ConditionalPatternBases, ht ConditionalHeadT
 			}
 
 			for k, n := range l[0:len(l) - 1] {
-				n.Link = l[k+1]
+				n.Link = l[k + 1]
 			}
 		}
 
@@ -142,6 +146,7 @@ func (p OrderableItems) Len() int {
 func (p OrderableItems) Swap(i, j int) {
 	p[i], p[j] = p[j], p[i]
 }
+
 type OrderableItemsWrapper struct {
 	OrderableItems
 	HT ConditionalHeadTable
@@ -186,16 +191,26 @@ func OrderConditionalPatternBases(bs ConditionalPatternBases, ht ConditionalHead
 			// copy slice so original is not modified by slicing
 			w := OrderableItemsWrapper{OrderableItems: OrderableItems(append([]ConditionalItem{}, bb...)), HT: ht[htindex]}
 			sort.Sort(w)
-			for i, o := range w.OrderableItems {
-				if ht[htindex].Get(o.Item) == nil {
-					w.OrderableItems=append(w.OrderableItems[:i], w.OrderableItems[i+1:]...)
-				}
-			}
+			w.OrderableItems = filter(w.OrderableItems, func(o ConditionalItem) bool {
+				return ht[htindex].Get(o.Item) != nil
+			})
+
 			nbs[x].Bases = append(nbs[x].Bases, []ConditionalItem(w.OrderableItems))
 		}
 
 	}
 	return nbs
+}
+
+
+func filter(s []ConditionalItem, fn func(ConditionalItem) bool) ([]ConditionalItem) {
+	p := []ConditionalItem{}
+	for _, v := range s {
+		if fn(v) {
+			p = append(p, v)
+		}
+	}
+	return p
 }
 
 type ConditionalHeadTable struct {
@@ -208,7 +223,6 @@ func ConstructConditionalHeadTables(bs ConditionalPatternBases, minSup int) []Co
 	for _, base := range bs {
 		ic := map[int]int{}
 		for _, iss := range base.Bases {
-
 			for _, tx := range iss {
 				ic[tx.Item] = ic[tx.Item] + tx.Count
 			}

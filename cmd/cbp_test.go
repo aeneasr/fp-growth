@@ -4,8 +4,6 @@ import (
 	"testing"
 	"fmt"
 	"github.com/stretchr/testify/assert"
-	"time"
-	"encoding/json"
 )
 
 var g_cbp = []ConditionalPatternBases{
@@ -151,7 +149,7 @@ var g_cbp = []ConditionalPatternBases{
 func TestMineConditionalPatternBases(t *testing.T) {
 	for k, c := range []struct {
 		db     DataSet
-		minSup float32
+		minSup int
 		e      ConditionalPatternBases
 	}{
 		{
@@ -194,7 +192,8 @@ func TestMineConditionalPatternBases(t *testing.T) {
 	} {
 		t.Run(fmt.Sprintf("case=%d", k), func(t *testing.T) {
 			h := NewHeadTable(c.db, c.minSup)
-			ordered := OrderItems(c.db, h)
+			ordered := c.db
+			OrderItems(ordered, h)
 			fpt := NewFPTree(ordered, &h)
 			cbp := MineConditionalPatternBases(fpt, h)
 
@@ -202,64 +201,6 @@ func TestMineConditionalPatternBases(t *testing.T) {
 		})
 	}
 
-}
-
-func TestBenchmarkMining(t *testing.T) {
-	t.SkipNow()
-
-	times := map[string]float64{}
-	minSups := []float32{
-		0.5,
-		0.4,
-		0.03,
-		0.02,
-		0.01,
-		0.005,
-		0.001,
-		0.0001,
-		0.00001,
-	}
-	txss := []int{
-		//10,
-		//100,
-		//10000,
-		1000,
-	}
-	uss := []int{
-		100,
-	}
-
-	var dbs = map[float32]map[int]map[int]DataSet{}
-	for _, minSup := range minSups {
-		for _, txs := range txss {
-			for _, us := range uss {
-				dbs[minSup] = make(map[int]map[int]DataSet)
-				dbs[minSup][txs] = make(map[int]DataSet)
-				dbs[minSup][txs][us], _ = generateDatabase(txs, us)
-			}
-		}
-	}
-
-	for _, minSup := range minSups {
-		for _, txs := range txss {
-			for _, us := range uss {
-				d := fmt.Sprintf("minsup=%f/transactions=%d/items=%d/minItems=%f", minSup, txs, us, float32(txs) * minSup)
-				db := dbs[minSup][txs][us]
-				t.Run(d, func(t *testing.T) {
-					start := time.Now()
-					h := NewHeadTable(db, float32(txs) * minSup)
-					ordered := OrderItems(db, h)
-					fpt := NewFPTree(ordered, &h)
-					_ = MineConditionalPatternBases(fpt, h)
-					end := time.Now()
-					t.Logf("Iteration took %f seconds", end.Sub(start).Seconds())
-					times[d] = end.Sub(start).Seconds()
-				})
-			}
-		}
-	}
-	out, _ := json.MarshalIndent(times, "", "\t")
-	t.Logf("%s", string(out))
 }
 
 func TestConstructConditionalHeadTables(t *testing.T) {
@@ -726,13 +667,8 @@ func TestConstructConditionalFPTrees(t *testing.T) {
 			ht := ConstructConditionalHeadTables(c.bs, c.minSup)
 			t.Logf("%v", c.bs)
 			bs := OrderConditionalPatternBases(c.bs, ht)
-
-			t.Logf("%v", bs)
-
 			trees := ConstructConditionalFPTrees(bs, ht)
 			assert.Equal(t, len(c.e), len(trees))
-			t.Logf("%v", trees)
-			t.Logf("%v", c.e)
 			for i, tree := range trees {
 				if i >= len(c.e) {
 					assert.True(t, false)
