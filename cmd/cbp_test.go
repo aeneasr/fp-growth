@@ -724,9 +724,15 @@ func TestConstructConditionalFPTrees(t *testing.T) {
 	} {
 		t.Run(fmt.Sprintf("case=%d", k), func(t *testing.T) {
 			ht := ConstructConditionalHeadTables(c.bs, c.minSup)
+			t.Logf("%v", c.bs)
 			bs := OrderConditionalPatternBases(c.bs, ht)
+
+			t.Logf("%v", bs)
+
 			trees := ConstructConditionalFPTrees(bs, ht)
 			assert.Equal(t, len(c.e), len(trees))
+			t.Logf("%v", trees)
+			t.Logf("%v", c.e)
 			for i, tree := range trees {
 				if i >= len(c.e) {
 					assert.True(t, false)

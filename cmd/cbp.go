@@ -73,7 +73,6 @@ type ConditionalFPTree struct {
 
 func ConstructConditionalFPTrees(bs ConditionalPatternBases, ht ConditionalHeadTables) (res []ConditionalFPTree) {
 	for _, tx := range bs {
-		links := map[int][]*FPTreeNode{}
 		t := ConditionalFPTree {
 			Prefix: tx.Prefix,
 			Tree: FPTree{
@@ -83,6 +82,7 @@ func ConstructConditionalFPTrees(bs ConditionalPatternBases, ht ConditionalHeadT
 			},
 		}
 
+		links := map[int][]*FPTreeNode{}
 		for _, b := range tx.Bases {
 			buildConditionalTree(b, t.Tree.Root, nil, links)
 		}
@@ -183,7 +183,8 @@ func OrderConditionalPatternBases(bs ConditionalPatternBases, ht ConditionalHead
 
 		nbs[x].Prefix = ht[htindex].Prefix
 		for _, bb := range b.Bases {
-			w := OrderableItemsWrapper{OrderableItems: OrderableItems(bb), HT: ht[htindex]}
+			// copy slice so original is not modified by slicing
+			w := OrderableItemsWrapper{OrderableItems: OrderableItems(append([]ConditionalItem{}, bb...)), HT: ht[htindex]}
 			sort.Sort(w)
 			for i, o := range w.OrderableItems {
 				if ht[htindex].Get(o.Item) == nil {
