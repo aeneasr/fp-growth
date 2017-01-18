@@ -327,8 +327,15 @@ func TestConstructConditionalHeadTables(t *testing.T) {
 		},
 	} {
 		t.Run(fmt.Sprintf("case=%d", k), func(t *testing.T) {
-			tables := ConstructConditionalHeadTables(c.bs, c.minSup)
-			assert.EqualValues(t, c.e, tables)
+			t.Run("algorithm=original", func(t *testing.T) {
+				tables := ConstructConditionalHeadTables(c.bs, c.minSup)
+				assert.EqualValues(t, c.e, tables)
+			})
+			//t.Run("algorithm=improved", func(t *testing.T) {
+			//	counts := ConstructConditionalSupportCountTables(c.bs)
+			//	tables := ConstructImprovedConditionalHeadTables(c.bs, counts, c.minSup)
+			//	assert.EqualValues(t, c.e, tables)
+			//})
 		})
 	}
 }

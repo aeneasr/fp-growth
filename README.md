@@ -30,17 +30,17 @@ go tool pprof -text cmd.test.exe cpu.prof
 ### Observation: Results are random
 
 ```
-"minsup=0.000001/transactions=10000000/items=5/minItems=10": 2.5707416,
-"minsup=0.000010/transactions=10000000/items=5/minItems=100": 2.6412529,
-"minsup=0.000100/transactions=10000000/items=5/minItems=1000": 2.550684,
-"minsup=0.000500/transactions=10000000/items=5/minItems=5000": 2.5707453,
-"minsup=0.001000/transactions=10000000/items=5/minItems=10000": 2.753271,
-"minsup=0.005000/transactions=10000000/items=5/minItems=50000": 3.7924038,
-"minsup=0.010000/transactions=10000000/items=5/minItems=100000": 2.345501,
-"minsup=0.020000/transactions=10000000/items=5/minItems=200000": 2.7109971,
-"minsup=0.030000/transactions=10000000/items=5/minItems=300000": 2.6995032,
-"minsup=0.400000/transactions=10000000/items=5/minItems=4000000": 2.4863225,
-"minsup=0.500000/transactions=10000000/items=5/minItems=5000000": 2.4159714
+"minsup=0.000001/transactions=10000000/itemspertx=5/minItems=10": 2.5707416,
+"minsup=0.000010/transactions=10000000/itemspertx=5/minItems=100": 2.6412529,
+"minsup=0.000100/transactions=10000000/itemspertx=5/minItems=1000": 2.550684,
+"minsup=0.000500/transactions=10000000/itemspertx=5/minItems=5000": 2.5707453,
+"minsup=0.001000/transactions=10000000/itemspertx=5/minItems=10000": 2.753271,
+"minsup=0.005000/transactions=10000000/itemspertx=5/minItems=50000": 3.7924038,
+"minsup=0.010000/transactions=10000000/itemspertx=5/minItems=100000": 2.345501,
+"minsup=0.020000/transactions=10000000/itemspertx=5/minItems=200000": 2.7109971,
+"minsup=0.030000/transactions=10000000/itemspertx=5/minItems=300000": 2.6995032,
+"minsup=0.400000/transactions=10000000/itemspertx=5/minItems=4000000": 2.4863225,
+"minsup=0.500000/transactions=10000000/itemspertx=5/minItems=5000000": 2.4159714
 ```
 
 Most probable cause: too much memory allocation going on.
@@ -146,17 +146,17 @@ func OrderItems(d DataSet, h HeadTable) DataSet {
 #### Results still random
 
 ```
-"minsup=0.000001/transactions=5000000/items=5/minItems=5": 0.8379999,
-"minsup=0.000010/transactions=5000000/items=5/minItems=50": 0.9544992000000001,
-"minsup=0.000100/transactions=5000000/items=5/minItems=500": 0.8164994000000001,
-"minsup=0.000500/transactions=5000000/items=5/minItems=2500": 1.5150001,
-"minsup=0.001000/transactions=5000000/items=5/minItems=5000": 0.9224999,
-"minsup=0.005000/transactions=5000000/items=5/minItems=25000": 0.9906296000000001,
-"minsup=0.010000/transactions=5000000/items=5/minItems=50000": 0.9079985,
-"minsup=0.020000/transactions=5000000/items=5/minItems=100000": 0.8584997000000001,
-"minsup=0.030000/transactions=5000000/items=5/minItems=150000": 0.9295004,
-"minsup=0.400000/transactions=5000000/items=5/minItems=2000000": 0.8699992000000001,
-"minsup=0.500000/transactions=5000000/items=5/minItems=2500000": 0.8775008000000001
+"minsup=0.000001/transactions=5000000/itemspertx=5/minItems=5": 0.8379999,
+"minsup=0.000010/transactions=5000000/itemspertx=5/minItems=50": 0.9544992000000001,
+"minsup=0.000100/transactions=5000000/itemspertx=5/minItems=500": 0.8164994000000001,
+"minsup=0.000500/transactions=5000000/itemspertx=5/minItems=2500": 1.5150001,
+"minsup=0.001000/transactions=5000000/itemspertx=5/minItems=5000": 0.9224999,
+"minsup=0.005000/transactions=5000000/itemspertx=5/minItems=25000": 0.9906296000000001,
+"minsup=0.010000/transactions=5000000/itemspertx=5/minItems=50000": 0.9079985,
+"minsup=0.020000/transactions=5000000/itemspertx=5/minItems=100000": 0.8584997000000001,
+"minsup=0.030000/transactions=5000000/itemspertx=5/minItems=150000": 0.9295004,
+"minsup=0.400000/transactions=5000000/itemspertx=5/minItems=2000000": 0.8699992000000001,
+"minsup=0.500000/transactions=5000000/itemspertx=5/minItems=2500000": 0.8775008000000001
 ```
 
 ```
@@ -235,17 +235,17 @@ Next, a proper sort solution was used (the one provided by golang), not allocati
 mem / cpu profiles but has equally unsatisfying results
 
 ```
-"minsup=0.000001/transactions=5000000/items=5/minItems=5": 2.034684,
-"minsup=0.000010/transactions=5000000/items=5/minItems=50": 2.2116977,
-"minsup=0.000100/transactions=5000000/items=5/minItems=500": 2.8525002,
-"minsup=0.000500/transactions=5000000/items=5/minItems=2500": 2.0490009,
-"minsup=0.001000/transactions=5000000/items=5/minItems=5000": 2.1565008,
-"minsup=0.005000/transactions=5000000/items=5/minItems=25000": 3.0685119,
-"minsup=0.010000/transactions=5000000/items=5/minItems=50000": 2.5010006000000002,
-"minsup=0.020000/transactions=5000000/items=5/minItems=100000": 2.3720007,
-"minsup=0.030000/transactions=5000000/items=5/minItems=150000": 2.2644998,
-"minsup=0.400000/transactions=5000000/items=5/minItems=2000000": 2.5505017,
-"minsup=0.500000/transactions=5000000/items=5/minItems=2500000": 2.4024993
+"minsup=0.000001/transactions=5000000/itemspertx=5/minItems=5": 2.034684,
+"minsup=0.000010/transactions=5000000/itemspertx=5/minItems=50": 2.2116977,
+"minsup=0.000100/transactions=5000000/itemspertx=5/minItems=500": 2.8525002,
+"minsup=0.000500/transactions=5000000/itemspertx=5/minItems=2500": 2.0490009,
+"minsup=0.001000/transactions=5000000/itemspertx=5/minItems=5000": 2.1565008,
+"minsup=0.005000/transactions=5000000/itemspertx=5/minItems=25000": 3.0685119,
+"minsup=0.010000/transactions=5000000/itemspertx=5/minItems=50000": 2.5010006000000002,
+"minsup=0.020000/transactions=5000000/itemspertx=5/minItems=100000": 2.3720007,
+"minsup=0.030000/transactions=5000000/itemspertx=5/minItems=150000": 2.2644998,
+"minsup=0.400000/transactions=5000000/itemspertx=5/minItems=2000000": 2.5505017,
+"minsup=0.500000/transactions=5000000/itemspertx=5/minItems=2500000": 2.4024993
 ```
 
 ```
@@ -338,19 +338,43 @@ manually iterating minItems helped and finally yielded ok-ish results!
 ### FINALLY RESULTS
 
 ```
-"minsup=0.030000/transactions=1000/items=8/minItems=30": 58.5780143,
-"minsup=0.031000/transactions=1000/items=8/minItems=31": 41.0704476,
-"minsup=0.032000/transactions=1000/items=8/minItems=32": 20.0553367,
-"minsup=0.033000/transactions=1000/items=8/minItems=33": 7.2605179,
-"minsup=0.034000/transactions=1000/items=8/minItems=34": 5.5139975,
-"minsup=0.035000/transactions=1000/items=8/minItems=35": 3.7444995,
-"minsup=0.036000/transactions=1000/items=8/minItems=36": 2.4385017,
-"minsup=0.037000/transactions=1000/items=8/minItems=37": 1.1875009,
-"minsup=0.038000/transactions=1000/items=8/minItems=38": 0.9679995,
-"minsup=0.039000/transactions=1000/items=8/minItems=39": 1.1464987,
-"minsup=0.040000/transactions=1000/items=8/minItems=40": 0.38200080000000003,
-"minsup=0.045000/transactions=1000/items=8/minItems=45": 0.1854994,
-"minsup=0.050000/transactions=1000/items=8/minItems=50": 0.054498500000000005,
-"minsup=0.100000/transactions=1000/items=8/minItems=100": 0.0015021000000000001,
-"minsup=0.500000/transactions=1000/items=8/minItems=500": 0.001
+"minsup=0.030000/transactions=1000/itemspertx=8/minItems=30": 58.5780143,
+"minsup=0.031000/transactions=1000/itemspertx=8/minItems=31": 41.0704476,
+"minsup=0.032000/transactions=1000/itemspertx=8/minItems=32": 20.0553367,
+"minsup=0.033000/transactions=1000/itemspertx=8/minItems=33": 7.2605179,
+"minsup=0.034000/transactions=1000/itemspertx=8/minItems=34": 5.5139975,
+"minsup=0.035000/transactions=1000/itemspertx=8/minItems=35": 3.7444995,
+"minsup=0.036000/transactions=1000/itemspertx=8/minItems=36": 2.4385017,
+"minsup=0.037000/transactions=1000/itemspertx=8/minItems=37": 1.1875009,
+"minsup=0.038000/transactions=1000/itemspertx=8/minItems=38": 0.9679995,
+"minsup=0.039000/transactions=1000/itemspertx=8/minItems=39": 1.1464987,
+"minsup=0.040000/transactions=1000/itemspertx=8/minItems=40": 0.38200080000000003,
+"minsup=0.045000/transactions=1000/itemspertx=8/minItems=45": 0.1854994,
+"minsup=0.050000/transactions=1000/itemspertx=8/minItems=50": 0.054498500000000005,
+"minsup=0.100000/transactions=1000/itemspertx=8/minItems=100": 0.0015021000000000001,
+"minsup=0.500000/transactions=1000/itemspertx=8/minItems=500": 0.001
+```
+
+### 18.1.2017
+
+The basic "Support Count Two-dimensional Table" algorithm is working. It's further improved by leabing out 0 fields, but
+it does not filter infrequent rows
+
+### Results, at last!
+
+Yup, that thing has definitely a bad performance! Why? Because it's super memory intensive
+
+```
+"algo=improved/minsup=0.050000/transactions=1000/items=8/minItems=50": 8.451999,
+"algo=improved/minsup=0.070000/transactions=1000/items=8/minItems=70": 0.26749860000000003,
+"algo=improved/minsup=0.080000/transactions=1000/items=8/minItems=80": 0.3689983,
+"algo=improved/minsup=0.100000/transactions=1000/items=8/minItems=100": 0.3499987,
+"algo=improved/minsup=0.200000/transactions=1000/items=8/minItems=200": 0.002,
+"algo=improved/minsup=0.500000/transactions=1000/items=8/minItems=500": 0.0004998,
+"algo=original/minsup=0.050000/transactions=1000/items=8/minItems=50": 0.045996,
+"algo=original/minsup=0.070000/transactions=1000/items=8/minItems=70": 0.0430006,
+"algo=original/minsup=0.080000/transactions=1000/items=8/minItems=80": 0.048999100000000004,
+"algo=original/minsup=0.100000/transactions=1000/items=8/minItems=100": 0.0020008,
+"algo=original/minsup=0.200000/transactions=1000/items=8/minItems=200": 0.0009987000000000002,
+"algo=original/minsup=0.500000/transactions=1000/items=8/minItems=500": 0.0004997000000000001
 ```
