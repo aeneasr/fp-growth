@@ -1,3 +1,6 @@
 .idea
 vendor/
 *.iml
+*.test
+*.test.exe
+*.prof

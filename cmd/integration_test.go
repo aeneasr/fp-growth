@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"encoding/json"
 	"time"
+	"runtime"
+	"runtime/debug"
 )
 
 func TestMining(t *testing.T) {
@@ -33,6 +35,7 @@ func runner(improved bool, dd string, db DataSet, minItems int, times map[string
 }
 
 func TestBenchmarkMining(t *testing.T) {
+	debug.SetGCPercent(-1)
 	times := map[string]float64{}
 	minSups := []int{
 		500,
@@ -40,7 +43,28 @@ func TestBenchmarkMining(t *testing.T) {
 		100,
 		80,
 		70,
+		60,
+		55,
+		54,
+		53,
+		52,
 		50,
+		49,48,47,46,
+		45,
+		44,43,42,41,
+		40,
+		39,
+		38,
+		37,
+		36,
+		35,
+		34,
+		33,
+		32,
+		31,
+		30,
+		29,
+		28,
 	}
 	txss := []int{		1000	}
 	uss := []int{		8	}
@@ -63,10 +87,14 @@ func TestBenchmarkMining(t *testing.T) {
 			for _, us := range uss {
 				var procSup = float32(minSup) / float32(txs)
 				var minItems = minSup
+				runtime.GC()
 				d := fmt.Sprintf("algo=original/minsup=%f/transactions=%d/items=%d/minItems=%d", procSup, txs, us, minItems)
-				t.Run(d,runner(false, d, dbs[minSup][txs][us], minItems, times))
-				d = fmt.Sprintf("algo=improved/minsup=%f/transactions=%d/items=%d/minItems=%d", procSup, txs, us, minItems)
-				t.Run(d,runner(true, d, dbs[minSup][txs][us], minItems, times))
+				t.Run(d, runner(false, d, dbs[minSup][txs][us], minItems, times))
+				if minSup >= 45 {
+					runtime.GC()
+					d = fmt.Sprintf("algo=improved/minsup=%f/transactions=%d/items=%d/minItems=%d", procSup, txs, us, minItems)
+					t.Run(d, runner(true, d, dbs[minSup][txs][us], minItems, times))
+				}
 			}
 		}
 	}

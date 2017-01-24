@@ -5,6 +5,9 @@ An fp-growth and improved fp-growth algorithm written in Go.
 Test:
 
 ```
+export GOGC=off
+
+
 cd cmd
 chokidar --initial "*.go" -c "go test ."
 
@@ -12,15 +15,31 @@ chokidar --initial "*.go" -c "go test ."
 chokidar --initial "*.go" -c "go test -v -run=TestBench* ."
 ```
 
+
+go test -run=TestBench* -v
+
 Run profile:
 
 ```
 go test -c
-cmd.test.exe -test.memprofile=mem.prof -test.run=TestBench -test.v
-cmd.test.exe -test.cpuprofile=cpu.prof -test.run=TestBench -test.v
+cmd.test.exe -test.memprofile=mem.prof -test.run=TestBench* -test.v
+cmd.test.exe -test.cpuprofile=cpu.prof -test.run=TestBenchMarkMining* -test.v
 go tool pprof -text --alloc_space cmd.test.exe mem.prof
 go tool pprof -text cmd.test.exe cpu.prof
+```
 
+osx:
+
+```
+go test -c
+./cmd.test -test.memprofile=mem.prof -test.run=TestBenchmarkMining* -test.v
+./cmd.test -test.cpuprofile=cpu.prof -test.run=TestBenchmarkMining* -test.v
+go tool pprof -text --alloc_objects cmd.test mem.prof
+go tool pprof -text cmd.test cpu.prof
+go tool pprof -svg --alloc_objects cmd.test mem.prof > mem.svg
+go tool pprof -svg cmd.test cpu.prof > cpu.svg
+go tool pprof -png --alloc_objects cmd.test mem.prof > mem.png
+go tool pprof -png cmd.test cpu.prof > cpu.png
 ```
 
 
@@ -378,3 +397,11 @@ Yup, that thing has definitely a bad performance! Why? Because it's super memory
 "algo=original/minsup=0.200000/transactions=1000/items=8/minItems=200": 0.0009987000000000002,
 "algo=original/minsup=0.500000/transactions=1000/items=8/minItems=500": 0.0004997000000000001
 ```
+
+Macbook pro:
+
+```
+```
+
+
+### the garbage collector is taking a lot of time
