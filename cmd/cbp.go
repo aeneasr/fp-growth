@@ -197,7 +197,7 @@ func OrderConditionalPatternBases(bs ConditionalPatternBases, ht ConditionalHead
 			w := OrderableItemsWrapper{OrderableItems: OrderableItems(append([]ConditionalItem{}, bb...)), HT: ht[htindex]}
 			sort.Sort(w)
 			w.OrderableItems = filter(w.OrderableItems, func(o ConditionalItem) bool {
-				return ht[htindex].Get(o.Item) != nil
+				return ht[htindex].Get(o.Item).Count != -1
 			})
 
 			nbs[x].Bases = append(nbs[x].Bases, []ConditionalItem(w.OrderableItems))

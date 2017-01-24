@@ -22,9 +22,11 @@ func MineAllPatterns(fpt FPTree, patterns []Pattern, minSup int, h HeadTable) []
 
 	for i, tree := range trees {
 		if tree.Tree.Root.OnlyOneBranch() {
-			patterns = append(patterns, tree.MineFrequentPatterns()...)
+			//patterns = append(patterns, tree.MineFrequentPatterns()...)
+			tree.MineFrequentPatterns()
 		} else {
-			patterns = append(patterns, MineAllPatterns(tree.Tree, patterns, minSup, cht[i].HeadTable)...)
+			//patterns = append(patterns, MineAllPatterns(tree.Tree, patterns, minSup, cht[i].HeadTable)...)
+			MineAllPatterns(tree.Tree, patterns, minSup, cht[i].HeadTable)
 		}
 	}
 	return patterns
@@ -49,11 +51,13 @@ func MineAllPatternsImproved(fpt FPTree, patterns []Pattern, minSup int, h HeadT
 
 	for _, tree := range trees {
 		if tree.Tree.Root.OnlyOneBranch() {
-			patterns = append(patterns, tree.MineFrequentPatterns()...)
+			//patterns = append(patterns, tree.MineFrequentPatterns()...)
+			tree.MineFrequentPatterns()
 		} else {
 			for _, ht := range cht {
 				if ht.Prefix.Item == tree.Prefix.Item {
-					patterns = append(patterns, MineAllPatternsImproved(tree.Tree, patterns, minSup, ht.HeadTable, condcs[tree.Prefix.Item])...)
+					//patterns = append(patterns, MineAllPatternsImproved(tree.Tree, patterns, minSup, ht.HeadTable, condcs[tree.Prefix.Item])...)
+					MineAllPatternsImproved(tree.Tree, patterns, minSup, ht.HeadTable, condcs[tree.Prefix.Item])
 				}
 			}
 		}

@@ -29,7 +29,7 @@ func OrderItems(d DataSet, h HeadTable) {
 		o.Items = items
 		sort.Sort(o)
 		d[x] = filterItems(items, func (i int) bool {
-			return h.Get(i) != nil
+			return h.Get(i).Count != -1
 		})
 	}
 }

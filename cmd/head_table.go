@@ -62,14 +62,14 @@ func (p HeadTable) SetLink(id int, link *FPTreeNode) {
 	}
 }
 
-func (p HeadTable) Get(id int) *HeadTableRow {
+func (p HeadTable) Get(id int) HeadTableRow {
 	for _, i := range p {
 		if i.Item == id {
-			return &i
+			return i
 		}
 	}
 
-	return nil
+	return HeadTableRow{Count: -1}
 }
 func (p HeadTable) GetPosition(id int) int {
 	for k, i := range p {

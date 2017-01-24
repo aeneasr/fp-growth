@@ -31,27 +31,37 @@ func runner(improved bool, dd string, db DataSet, minItems int, times map[string
 		fmt.Println(pp)
 		t.Log(pp)
 		times[dd] = end.Sub(start).Seconds()
+
+
+		start = time.Now()
+		runtime.GC()
+		end = time.Now()
+		fmt.Printf("GC took %f seconds\n", end.Sub(start).Seconds())
 	}
 }
 
 func TestBenchmarkMining(t *testing.T) {
+	if testing.Short() {
+		t.Skip("skipping test in short mode.")
+	}
+
 	debug.SetGCPercent(-1)
 	times := map[string]float64{}
 	minSups := []int{
+		800,
+		700,
+		600,
 		500,
+		400,
+		300,
 		200,
 		100,
+		90,
 		80,
 		70,
 		60,
-		55,
-		54,
-		53,
-		52,
 		50,
-		49,48,47,46,
 		45,
-		44,43,42,41,
 		40,
 		39,
 		38,
@@ -65,9 +75,10 @@ func TestBenchmarkMining(t *testing.T) {
 		30,
 		29,
 		28,
+		27,26,25,24,23,22,21,20,19,18,17,16,15,
 	}
 	txss := []int{		1000	}
-	uss := []int{		8	}
+	uss := []int{		40	}
 
 	var dbs = map[int]map[int]map[int]DataSet{}
 	dbstart := time.Now()
@@ -87,14 +98,12 @@ func TestBenchmarkMining(t *testing.T) {
 			for _, us := range uss {
 				var procSup = float32(minSup) / float32(txs)
 				var minItems = minSup
-				runtime.GC()
 				d := fmt.Sprintf("algo=original/minsup=%f/transactions=%d/items=%d/minItems=%d", procSup, txs, us, minItems)
 				t.Run(d, runner(false, d, dbs[minSup][txs][us], minItems, times))
-				if minSup >= 45 {
-					runtime.GC()
+				//if minSup >= 45{
 					d = fmt.Sprintf("algo=improved/minsup=%f/transactions=%d/items=%d/minItems=%d", procSup, txs, us, minItems)
 					t.Run(d, runner(true, d, dbs[minSup][txs][us], minItems, times))
-				}
+				//}
 			}
 		}
 	}
