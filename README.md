@@ -7,6 +7,7 @@ This project shows that the "..." proposed by ... is in fact performing worse th
 **Run benchmarks**
 
 ```
+$ cd cmd
 $ go test -v -run=TestBenchmarkMin* -timeout 99999s .
 ```
 
